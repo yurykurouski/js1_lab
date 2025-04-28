@@ -2,7 +2,7 @@ import { Cube } from '../entities/Cube';
 import { Point } from '../entities/Point';
 import { CubeService } from '../services/CubeService';
 
-describe('CubeService', () => {
+describe('GIVEN CubeService', () => {
   const cube = new Cube('cube1', new Point(0, 0, 0), 3);
 
   describe('WHEN calculating surface area', () => {

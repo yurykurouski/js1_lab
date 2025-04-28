@@ -1,7 +1,7 @@
 import { OvalValidator } from '../validators/OvalValidator';
 import { InvalidShapeError } from '../exceptions/InvalidShapeError';
 
-describe('OvalValidator', () => {
+describe('GIVEN OvalValidator', () => {
   describe('WHEN validating input values', () => {
     it('THEN return true', () => {
       const values = ['0', '0', '2', '3'];
