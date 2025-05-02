@@ -6,6 +6,7 @@ import { CubeValidator } from '../validators/CubeValidator';
 import { OvalValidator } from '../validators/OvalValidator';
 import { logger } from '../utils/logger';
 import { InvalidShapeError } from '../exceptions/InvalidShapeError';
+import { Shape } from '../entities/Shape';
 
 export class ShapeFactory {
   static createCube(id: string, values: string[]): Cube | null {
@@ -42,7 +43,7 @@ export class ShapeFactory {
     }
   }
 
-  static createShapeFromLine(line: string, id: string): (Cube | Oval) | null {
+  static createShapeFromLine(line: string, id: string): Shape | null {
     const parts = line.trim().split(/\s+/);
     const shapeType = parts[0].toUpperCase();
     const args = parts.slice(1);

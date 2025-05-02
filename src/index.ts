@@ -1,16 +1,15 @@
 import path from 'path';
 import { ShapeFactory } from './factories/ShapeFactory';
 import { logger } from './utils/logger';
-import { Cube } from './entities/Cube';
-import { Oval } from './entities/Oval';
+import { Shape } from './entities/Shape';
 import { dataReader } from './fs/DataReader';
 
 const dataPath = process.env.DATA_PATH ?? 'data/shapes.txt';
 const filePath = path.join(__dirname, '..', dataPath);
 
-function processShapesFromFile(filePath: string): (Cube | Oval)[] {
+function processShapesFromFile(filePath: string): Shape[] {
   const lines = dataReader.readFileLines(filePath);
-  const shapes: (Cube | Oval)[] = [];
+  const shapes: Shape[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
