@@ -87,7 +87,7 @@ export class EntityRepository<T extends Shape> {
   }
 
   public sortByName(): T[] {
-    return this.sort(ShapeComparators.byName<T>());
+    return this.sort(ShapeComparators.byType<T>());
   }
 
   public sortByFirstPointX(): T[] {
