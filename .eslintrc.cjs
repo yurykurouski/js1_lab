@@ -18,7 +18,7 @@ module.exports = {
   ],
   overrides: [],
   rules: {
-    "@typescript-eslint/unbound-method": "0",
+    "@typescript-eslint/unbound-method": 0,
     '@typescript-eslint/require-await': 0,
     '@typescript-eslint/ban-ts-comment': 0,
     '@typescript-eslint/no-misused-promises': [
