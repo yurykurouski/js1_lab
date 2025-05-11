@@ -22,9 +22,9 @@ jest.mock('../repositories/Warehouse', () => ({
 jest.mock('../repositories/ShapeComparator', () => ({
     ShapeComparators: {
         byId: jest.fn(),
-        byName: jest.fn(),
         byFirstPointX: jest.fn(),
         byFirstPointY: jest.fn(),
+        byType: jest.fn(),
     }
 }));
 
@@ -147,14 +147,14 @@ describe('EntityRepository', () => {
     });
 
     it('should sort by name', () => {
-        (ShapeComparators.byName as jest.Mock).mockImplementation(() =>
-            (a: MockShape, b: MockShape) => a.constructor.name.localeCompare(b.constructor.name));
+        (ShapeComparators.byType as jest.Mock).mockImplementation(() =>
+            (a: MockShape, b: MockShape) => a.type.localeCompare(b.type));
 
         repo.add(shape1);
         repo.add(shape2);
 
-        expect(repo.sortByName()).toEqual([shape1, shape2]);
-        expect(ShapeComparators.byName).toHaveBeenCalled();
+        expect(repo.sortByName()).toEqual([shape2, shape1]);
+        expect(ShapeComparators.byType).toHaveBeenCalled();
     });
 
     it('should sort by firstPoint.x', () => {
