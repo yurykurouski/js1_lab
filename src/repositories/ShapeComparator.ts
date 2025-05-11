@@ -7,39 +7,20 @@ export class ShapeComparators {
         return (a, b) => a.id.localeCompare(b.id);
     }
 
-    static byName<T extends Shape>(): TShapeComparator<T> {
+    static byType<T extends Shape>(): TShapeComparator<T> {
         return (a, b) => {
-            const nameA = a.constructor.name;
-            const nameB = b.constructor.name;
+            const nameA = a.type;
+            const nameB = b.type;
+
             return nameA.localeCompare(nameB);
         }
     }
 
     static byFirstPointX<T extends Shape>(): TShapeComparator<T> {
-        return (a, b) => {
-            const getX = (shape: T): number => {
-                if (shape.point && typeof shape.point.x === 'number') {
-                    return shape.point.x;
-                }
-
-                return 0;
-            };
-
-            return getX(a) - getX(b);
-        };
+        return (a, b) => a.point.x - b.point.x;
     }
 
     static byFirstPointY<T extends Shape>(): TShapeComparator<T> {
-        return (a, b) => {
-            const getY = (shape: T): number => {
-                if (shape.point && typeof shape.point.y === 'number') {
-                    return shape.point.y;
-                }
-
-                return 0;
-            };
-
-            return getY(a) - getY(b);
-        }
+        return (a, b) => a.point.y - b.point.y;
     }
 }
