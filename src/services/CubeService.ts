@@ -1,19 +1,25 @@
 import { Cube } from '../entities/Cube';
+import { ShapeService } from './ShapeService';
 
-export class CubeService {
-  static calculateSurfaceArea(cube: Cube): number {
+
+export class CubeService implements ShapeService<Cube> {
+  public calculateArea(cube: Cube): number | undefined {
     return 6 * Math.pow(cube.edgeLength, 2);
   }
 
-  static calculateVolume(cube: Cube): number {
+  public calculatePerimeter(cube: Cube): number | undefined {
+    return 12 * cube.edgeLength;
+  }
+
+  public calculateVolume(cube: Cube): number {
     return Math.pow(cube.edgeLength, 3);
   }
 
-  static isCube(cube: Cube): boolean {
+  public isCube(cube: Cube): boolean {
     return cube.edgeLength > 0;
   }
 
-  static intersectsCoordinatePlane(cube: Cube): boolean {
+  public intersectsCoordinatePlane(cube: Cube): boolean {
     const { x, y, z } = cube.point;
     const edge = cube.edgeLength;
 
@@ -22,7 +28,7 @@ export class CubeService {
     );
   }
 
-  static baseLiesOnCoordinatePlane(cube: Cube): boolean {
+  public baseLiesOnCoordinatePlane(cube: Cube): boolean {
     const { x, y, z } = cube.point;
 
     const onXY = z === 0;
@@ -34,7 +40,7 @@ export class CubeService {
     return onXY || onXZ || onYZ;
   }
 
-  static getBaseCoordinatePlane(cube: Cube): string[] {
+  public getBaseCoordinatePlane(cube: Cube): string[] {
     const { x, y, z } = cube.point;
     const planes: string[] = [];
 
@@ -45,3 +51,5 @@ export class CubeService {
     return planes.length > 0 ? planes : ['None'];
   }
 }
+
+export const cubeService = new CubeService();
