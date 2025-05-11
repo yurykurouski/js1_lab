@@ -7,3 +7,6 @@ export class MockShape extends Shape {
         super(id, firstPoint, type);
     }
 }
+
+export const shapeAMock = new MockShape('id2', { x: 1, y: 2, z: 0 }, ShapeType.OVAL);
+export const shapeBMock = new MockShape('id1', { x: 3, y: 4, z: 5 }, ShapeType.CUBE);

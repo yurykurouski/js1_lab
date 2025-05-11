@@ -4,7 +4,7 @@ import { EntityRepository } from '../repositories/EntityRepository';
 import { warehouse } from '../repositories/Warehouse';
 import { ShapeComparators } from '../repositories/ShapeComparator';
 import { ShapeType } from '../entities/constants';
-import { MockShape } from './mocks/mockShape';
+import { MockShape, shapeAMock, shapeBMock } from './mocks/mockShape';
 
 
 jest.mock('../services/ShapeMapper');
@@ -31,13 +31,9 @@ jest.mock('../repositories/ShapeComparator', () => ({
 
 describe('EntityRepository', () => {
     let repo: EntityRepository<MockShape>;
-    let shape1: MockShape;
-    let shape2: MockShape;
 
     beforeEach(() => {
         repo = new EntityRepository<MockShape>();
-        shape1 = new MockShape('id1', { x: 1, y: 2, z: 0 }, ShapeType.OVAL);
-        shape2 = new MockShape('id2', { x: 3, y: 4, z: 5 }, ShapeType.CUBE);
 
         jest.clearAllMocks();
 
@@ -53,40 +49,40 @@ describe('EntityRepository', () => {
     });
 
     it('should add an entity and update warehouse', () => {
-        expect(repo.add(shape1)).toBe(true);
-        expect(repo.findById('id1')).toBe(shape1);
-        expect(warehouse.setArea).toHaveBeenCalledWith('id1', 10);
-        expect(warehouse.setPerimeter).toHaveBeenCalledWith('id1', 20);
-        expect(warehouse.setVolume).toHaveBeenCalledWith('id1', 30);
+        expect(repo.add(shapeAMock)).toBe(true);
+        expect(repo.findById('id2')).toBe(shapeAMock);
+        expect(warehouse.setArea).toHaveBeenCalledWith('id2', 10);
+        expect(warehouse.setPerimeter).toHaveBeenCalledWith('id2', 20);
+        expect(warehouse.setVolume).toHaveBeenCalledWith('id2', 30);
     });
 
     it('should find entity by id', () => {
-        repo.add(shape1);
+        repo.add(shapeAMock);
 
-        expect(repo.findById('id1')).toBe(shape1);
+        expect(repo.findById('id2')).toBe(shapeAMock);
         expect(repo.findById('notfound')).toBeUndefined();
     });
 
     it('should find entity by name', () => {
-        repo.add(shape1);
+        repo.add(shapeAMock);
 
-        expect(repo.findByName('MockShape')).toBe(shape1);
+        expect(repo.findByName('MockShape')).toBe(shapeAMock);
         expect(repo.findByName('OtherShape')).toBeUndefined();
     });
 
     it('should return all entities', () => {
-        repo.add(shape1);
-        repo.add(shape2);
+        repo.add(shapeAMock);
+        repo.add(shapeBMock);
 
-        expect(repo.getAll()).toEqual([shape1, shape2]);
+        expect(repo.getAll()).toEqual([shapeAMock, shapeBMock]);
     });
 
     it('should remove entity and call warehouse.remove', () => {
-        repo.add(shape1);
+        repo.add(shapeAMock);
 
-        expect(repo.remove('id1')).toBe(true);
-        expect(repo.findById('id1')).toBeUndefined();
-        expect(warehouse.remove).toHaveBeenCalledWith('id1');
+        expect(repo.remove('id2')).toBe(true);
+        expect(repo.findById('id2')).toBeUndefined();
+        expect(warehouse.remove).toHaveBeenCalledWith('id2');
     });
 
     it('should return false when removing non-existent entity', () => {
@@ -94,55 +90,55 @@ describe('EntityRepository', () => {
     });
 
     it('should update existing entity and warehouse', () => {
-        repo.add(shape1);
+        repo.add(shapeAMock);
 
-        const updated = new MockShape('id1', { x: 9, y: 9, z: 0 }, ShapeType.CUBE);
+        const updated = new MockShape('id2', { x: 9, y: 9, z: 0 }, ShapeType.CUBE);
 
         expect(repo.update(updated)).toBe(true);
-        expect(repo.findById('id1')).toBe(updated);
-        expect(warehouse.setArea).toHaveBeenCalledWith('id1', 10);
+        expect(repo.findById('id2')).toBe(updated);
+        expect(warehouse.setArea).toHaveBeenCalledWith('id2', 10);
     });
 
     it('should return false when updating non-existent entity', () => {
-        expect(repo.update(shape1)).toBe(false);
+        expect(repo.update(shapeAMock)).toBe(false);
     });
 
     it('should find shapes in area range', () => {
-        (warehouse.getArea as jest.Mock).mockImplementation((id) => id === 'id1' ? 15 : 5);
+        (warehouse.getArea as jest.Mock).mockImplementation((id) => id === 'id2' ? 15 : 5);
 
-        repo.add(shape1);
-        repo.add(shape2);
+        repo.add(shapeAMock);
+        repo.add(shapeBMock);
 
-        expect(repo.findShapesInArea(10, 20)).toEqual([shape1]);
-        expect(repo.findShapesInArea(0, 10)).toEqual([shape2]);
+        expect(repo.findShapesInArea(10, 20)).toEqual([shapeAMock]);
+        expect(repo.findShapesInArea(0, 10)).toEqual([shapeBMock]);
     });
 
     it('should find shapes in perimeter range', () => {
-        (warehouse.getPerimeter as jest.Mock).mockImplementation((id) => id === 'id1' ? 25 : 8);
+        (warehouse.getPerimeter as jest.Mock).mockImplementation((id) => id === 'id2' ? 25 : 8);
 
-        repo.add(shape1);
-        repo.add(shape2);
+        repo.add(shapeAMock);
+        repo.add(shapeBMock);
 
-        expect(repo.findShapesInPerimeter(20, 30)).toEqual([shape1]);
-        expect(repo.findShapesInPerimeter(0, 10)).toEqual([shape2]);
+        expect(repo.findShapesInPerimeter(20, 30)).toEqual([shapeAMock]);
+        expect(repo.findShapesInPerimeter(0, 10)).toEqual([shapeBMock]);
     });
 
     it('should sort entities using custom comparator', () => {
-        repo.add(shape2);
-        repo.add(shape1);
+        repo.add(shapeBMock);
+        repo.add(shapeAMock);
 
         const comparator = (a: MockShape, b: MockShape) => a.id.localeCompare(b.id);
 
-        expect(repo.sort(comparator)).toEqual([shape1, shape2]);
+        expect(repo.sort(comparator)).toEqual([shapeBMock, shapeAMock]);
     });
 
     it('should sort by id', () => {
         (ShapeComparators.byId as jest.Mock).mockImplementation(() => (a: MockShape, b: MockShape) => a.id.localeCompare(b.id));
 
-        repo.add(shape2);
-        repo.add(shape1);
+        repo.add(shapeBMock);
+        repo.add(shapeAMock);
 
-        expect(repo.sortById()).toEqual([shape1, shape2]);
+        expect(repo.sortById()).toEqual([shapeBMock, shapeAMock]);
         expect(ShapeComparators.byId).toHaveBeenCalled();
     });
 
@@ -150,10 +146,10 @@ describe('EntityRepository', () => {
         (ShapeComparators.byType as jest.Mock).mockImplementation(() =>
             (a: MockShape, b: MockShape) => a.type.localeCompare(b.type));
 
-        repo.add(shape1);
-        repo.add(shape2);
+        repo.add(shapeAMock);
+        repo.add(shapeBMock);
 
-        expect(repo.sortByName()).toEqual([shape2, shape1]);
+        expect(repo.sortByName()).toEqual([shapeBMock, shapeAMock]);
         expect(ShapeComparators.byType).toHaveBeenCalled();
     });
 
@@ -161,10 +157,10 @@ describe('EntityRepository', () => {
         (ShapeComparators.byFirstPointX as jest.Mock).mockImplementation(() =>
             (a: MockShape, b: MockShape) => a.firstPoint.x - b.firstPoint.x);
 
-        repo.add(shape2);
-        repo.add(shape1);
+        repo.add(shapeBMock);
+        repo.add(shapeAMock);
 
-        expect(repo.sortByFirstPointX()).toEqual([shape1, shape2]);
+        expect(repo.sortByFirstPointX()).toEqual([shapeAMock, shapeBMock]);
         expect(ShapeComparators.byFirstPointX).toHaveBeenCalled();
     });
 
@@ -172,18 +168,18 @@ describe('EntityRepository', () => {
         (ShapeComparators.byFirstPointY as jest.Mock).mockImplementation(() =>
             (a: MockShape, b: MockShape) => a.firstPoint.y - b.firstPoint.y);
 
-        repo.add(shape2);
-        repo.add(shape1);
+        repo.add(shapeBMock);
+        repo.add(shapeAMock);
 
-        expect(repo.sortByFirstPointY()).toEqual([shape1, shape2]);
+        expect(repo.sortByFirstPointY()).toEqual([shapeAMock, shapeBMock]);
         expect(ShapeComparators.byFirstPointY).toHaveBeenCalled();
     });
 
     it('should log error if unknown error is thrown in updateWarehouse', () => {
         (ShapeMapper as jest.Mock).mockImplementation(() => { throw new Error('unknown'); });
 
-        repo.add(shape1);
+        repo.add(shapeAMock);
 
-        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Unexpected error updating warehouse for entity id1'));
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Unexpected error updating warehouse for entity id2'));
     });
 });
