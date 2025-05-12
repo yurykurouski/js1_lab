@@ -29,6 +29,4 @@ function processShapesFromFile(filePath: string): void {
 
 processShapesFromFile(filePath);
 
-const shapes = entityRepository.getAll();
-
-logger.info(`🎉 Summary: shapes created: ${shapes.length}`);
+logger.info(`🎉 Summary: shapes created: ${entityRepository.getAll().length}`);
