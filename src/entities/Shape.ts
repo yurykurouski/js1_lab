@@ -1,14 +1,40 @@
 import { ShapeType } from "./constants";
 import { Point } from "./Point";
+import { IShapeObserver, IShapeSubject } from "./Observer";
 
-export class Shape {
-  public readonly id: string;
-  public readonly point: Point;
+
+export class Shape implements IShapeSubject {
+  private readonly _id: string;
+  private readonly _point: Point;
   public readonly type: ShapeType;
 
+  private observers: IShapeObserver[] = [];
+
   constructor(id: string, point: Point, type: ShapeType) {
-    this.id = id;
+    this._id = id;
     this.type = type;
-    this.point = point;
+    this._point = point;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  get point(): Point {
+    return this._point;
+  }
+
+  addObserver(observer: IShapeObserver): void {
+    this.observers.push(observer);
+  }
+
+  removeObserver(observer: IShapeObserver): void {
+    this.observers = this.observers.filter(o => o !== observer);
+  }
+
+  notifyObservers(): void {
+    for (const observer of this.observers) {
+      observer.update(this.id);
+    }
   }
 }

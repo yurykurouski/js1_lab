@@ -1,7 +1,4 @@
 import { Shape } from '../entities/Shape';
-import { MethodNotFoundException } from '../exceptions/ShapeMapperError';
-import { ShapeMapper } from '../services/ShapeMapper';
-import { logger } from '../utils/logger';
 
 import { ShapeComparators } from './ShapeComparator';
 import { TShapeComparator } from './types';
@@ -16,7 +13,6 @@ export class EntityRepository<T extends Shape> {
 
   public add(entity: T): boolean {
     this.entities.set(entity.id, entity);
-    this.updateWarehouse(entity);
 
     return true;
   }
@@ -49,7 +45,6 @@ export class EntityRepository<T extends Shape> {
   public update(entity: T): boolean {
     if (!this.entities.has(entity.id)) return false;
     this.entities.set(entity.id, entity);
-    this.updateWarehouse(entity);
     return true;
   }
 
@@ -96,33 +91,6 @@ export class EntityRepository<T extends Shape> {
 
   public sortByFirstPointY(): T[] {
     return this.sort(ShapeComparators.byFirstPointY<T>());
-  }
-
-  private updateWarehouse(entity: T): void {
-    try {
-      const area = ShapeMapper(entity, 'calculateArea');
-      const perimeter = ShapeMapper(entity, 'calculatePerimeter');
-      const volume = ShapeMapper(entity, 'calculateVolume');
-
-      if (typeof area === 'number') {
-        warehouse.setArea(entity.id, area);
-      }
-
-      if (typeof perimeter === 'number') {
-        warehouse.setPerimeter(entity.id, perimeter);
-      }
-
-      if (typeof volume === 'number') {
-        warehouse.setVolume(entity.id, volume);
-      }
-    } catch (error) {
-      if (error instanceof MethodNotFoundException) {
-        logger.error(`Error updating warehouse for entity ${entity.id}: ${error.message}`);
-      } else {
-        logger.error(`Unexpected error updating warehouse for entity ${entity.id}`);
-      }
-    }
-
   }
 }
 
